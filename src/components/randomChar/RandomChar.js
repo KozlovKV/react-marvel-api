@@ -1,26 +1,59 @@
 import { Component } from "react";
+import MarvelService from './../../services/MarvelService';
 
 import './randomChar.scss';
 
-import randomCharImg from '../../resources/img/thor.jpeg';
 import mjolnirImg from '../../resources/img/mjolnir.png';
 
 export default class RandomChar extends Component {
+	state = {
+		char: {}
+	}
+
+	marvelService = new MarvelService();
+
+	updateChar = () => {
+		let randomId = 1009262;
+		this.marvelService.getCharacter(randomId)
+			.then(char => this.setState({char}));
+	}
+
+	componentDidMount() {
+		this.updateChar();
+	}
+
+	_maxDescriptionLength = 180;
+	getShortedDescription() {
+		const { description } = this.state.char;
+
+		if (!description) { return <strong>Description not found</strong>; }
+		if (description.length <= this._maxDescriptionLength) { return description; }
+		
+		let words = description.split(' '), charLen = 0, i = 0;
+		while (charLen + words[i].length <= this._maxDescriptionLength) {
+			charLen += words[i].length;
+			i++;
+		}
+		return words.slice(0, i).join(' ') + '…';
+	}
+
 	render() {
+		const { thumbnailUrl, name, homepageUrl, wikiUrl } = this.state.char;
+		console.log(this.state.char);
 		return (
 			<div className="randomchar">
 				<div className="randomchar__block">
-					<img src={randomCharImg} alt="Random character" className="randomchar__img" />
+					<img src={thumbnailUrl} alt={name} className="randomchar__img" />
 					<div className="randomchar__info">
-						<p className="randomchar__name">Thor</p>
+						<p className="randomchar__name">{name}</p>
 						<p className="randomchar__descr">
-							As the Norse God of thunder and lightning, Thor wields one of the greatest weapons ever made, the enchanted hammer Mjolnir. While others have described Thor as an over-muscled, oafish imbecile, he's quite smart and compassionate...
+							{this.getShortedDescription()}	
 						</p>
 						<div className="randomchar__btns">
-							<a href="./" className="button button__main">
+							<a href={homepageUrl} className="button button__main">
 								<div className="inner">homepage</div>
 							</a>
-							<a href="./" className="button button__secondary">
+							<a href={wikiUrl} className="button button__secondary">
 								<div className="inner">Wiki</div>
 							</a>
 						</div>
@@ -34,7 +67,7 @@ export default class RandomChar extends Component {
 					<p className="randomchar__title">
 						Or choose another one
 					</p>
-					<button className="button button__main">
+					<button className="button button__main" onClick={this.updateChar}>
 						<div className="inner">try it</div>
 					</button>
 					<img src={mjolnirImg} alt="mjolnir" className="randomchar__decoration" />

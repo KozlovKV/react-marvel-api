@@ -15,11 +15,23 @@ export default class MarvelService {
 		return await response.json();
 	}
 
-	getCharacters() {
-		return this.get('characters', {limit: 9, offset: 210})
+	async getCharacters() {
+		const result = await this.get('characters', {limit: 9, offset: 210})
+		return result.data.results.map(this._getProcessedCharacter);
 	}
 
-	getCharacter(id) {
-		return this.get(`characters/${id}`)
+	async getCharacter(id) {
+		const result = await this.get(`characters/${id}`)
+		return this._getProcessedCharacter(result.data.results[0]);
+	}
+
+	_getProcessedCharacter(charObj) {
+		const { id, name, description, thumbnail, urls } = charObj;
+		let thumbnailUrl = thumbnail.path + '.' + thumbnail.extension,
+			homepageUrl = urls[0].url,
+			wikiUrl = urls[1].url;
+		return {
+			id, name, description, thumbnailUrl, homepageUrl, wikiUrl
+		}
 	}
 }
