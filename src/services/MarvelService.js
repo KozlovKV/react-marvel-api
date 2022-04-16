@@ -4,8 +4,8 @@ export default class MarvelService {
 
 	async get(urlPrefix, getParametersObject) {
 		let getParametersList = [this._apiKey];
-		for (let key in getParametersObject) { 
-			getParametersList.push(`${key}=${getParametersObject[key]}`); 
+		for (let key in getParametersObject) {
+			getParametersList.push(`${key}=${getParametersObject[key]}`);
 		}
 		let requestUrl = `${this._apiBase}/${urlPrefix}?${getParametersList.join('&')}`;
 		let response = await fetch(requestUrl);
@@ -15,8 +15,9 @@ export default class MarvelService {
 		return await response.json();
 	}
 
-	async getCharacters() {
-		const result = await this.get('characters', {limit: 9, offset: 210})
+	async getCharacters(limit) {
+		limit = limit <= 100 ? limit : 100;
+		const result = await this.get('characters', { limit, offset: 210 })
 		return result.data.results.map(this._getProcessedCharacter);
 	}
 

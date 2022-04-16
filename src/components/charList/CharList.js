@@ -1,17 +1,38 @@
 import { Component } from "react";
 
 import CharItem from "../charItem/CharItem";
+import MarvelService from "../../services/MarvelService";
 
 import './charList.scss';
 
 export default class CharList extends Component {
+	_loadMoreDelta = 9;
+	state = {
+		characters: []
+	}
+
+	marvelService = new MarvelService();
+
+	componentDidMount() {
+		this.loadCharacters(9);
+	}
+
+	loadCharacters(loadLimit) {
+		this.marvelService.getCharacters(loadLimit)
+			.then(characters => this.setState({characters}));
+	}
+
 	getCharItems() {
-		let items = [];
-		for (let i = 0; i < 9; ++i) {
-			if (i === 2) { items.push(<CharItem key={i} active/>); }
-			else { items.push(<CharItem key={i}/>); }
+		const { characters } = this.state;
+		return characters.map(char => <CharItem key={char.id} {...char} />);
+	}
+
+	canLoadMore() { return this.state.characters.length < 100; }
+
+	onLoadMore = async () => {
+		if (this.canLoadMore()) {
+			this.loadCharacters(this.state.characters.length + this._loadMoreDelta);
 		}
-		return items;
 	}
 
 	render() {
@@ -20,8 +41,11 @@ export default class CharList extends Component {
 				<ul className="char__grid">
 					{this.getCharItems()}
 				</ul>
-				<button className="button button__main button__long">
-					<div className="inner">load more</div>
+				<button className="button button__main button__long" 
+						onClick={this.onLoadMore}>
+					<div className="inner">
+						{this.canLoadMore() ? "load more" : "Max characters loaded"}
+					</div>
 				</button>
 			</div>
 		);
