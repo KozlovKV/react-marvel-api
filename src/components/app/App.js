@@ -7,6 +7,7 @@ import './app.scss';
 
 import bgDecoration from '../../resources/img/vision.png';
 
+
 function App() {
 	return (
 		<div className="app">
