@@ -13,7 +13,7 @@ export default class RandomChar extends Component {
 	marvelService = new MarvelService();
 
 	updateChar = () => {
-		let randomId = 1009262;
+		let randomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
 		this.marvelService.getCharacter(randomId)
 			.then(char => this.setState({char}));
 	}
@@ -22,13 +22,13 @@ export default class RandomChar extends Component {
 		this.updateChar();
 	}
 
-	_maxDescriptionLength = 180;
+	_maxDescriptionLength = 190;
 	getShortedDescription() {
 		const { description } = this.state.char;
 
 		if (!description) { return <strong>Description not found</strong>; }
 		if (description.length <= this._maxDescriptionLength) { return description; }
-		
+
 		let words = description.split(' '), charLen = 0, i = 0;
 		while (charLen + words[i].length <= this._maxDescriptionLength) {
 			charLen += words[i].length;
@@ -39,7 +39,6 @@ export default class RandomChar extends Component {
 
 	render() {
 		const { thumbnailUrl, name, homepageUrl, wikiUrl } = this.state.char;
-		console.log(this.state.char);
 		return (
 			<div className="randomchar">
 				<div className="randomchar__block">
