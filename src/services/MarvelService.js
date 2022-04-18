@@ -27,14 +27,14 @@ export default class MarvelService {
 	}
 
 	
-	_maxDescriptionLength = 190;
+	static _maxDescriptionLength = 190;
 	static _getShortedDescription(description) {
 
 		if (!description) { return 'Description not found'; }
-		if (description.length <= this._maxDescriptionLength) { return description; }
+		if (description.length <= MarvelService._maxDescriptionLength) { return description; }
 
 		let words = description.split(' '), charLen = 0, i = 0;
-		while (charLen + words[i].length <= this._maxDescriptionLength) {
+		while (charLen + words[i].length <= MarvelService._maxDescriptionLength) {
 			charLen += words[i].length;
 			i++;
 		}

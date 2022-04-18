@@ -1,6 +1,7 @@
 import { Component } from "react";
 import MarvelService from './../../services/MarvelService';
 import Spinner from "../spinner/Spinner";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import './randomChar.scss';
 
@@ -10,19 +11,25 @@ export default class RandomChar extends Component {
 	state = {
 		char: {},
 		loading: true,
+		error: false,
 	}
 
 	marvelService = new MarvelService();
 
-	onCharLoaded(char) {
-		this.setState({ char, loading: false });
+	onCharLoaded = (char) => {
+		this.setState({ char, loading: false, error: false });
+	}
+
+	onError = () => {
+		this.setState({loading: false, error: true});
 	}
 
 	updateChar = () => {
 		let randomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
 		this.setState({loading: true});
 		this.marvelService.getCharacter(randomId)
-			.then(char => this.onCharLoaded(char));
+			.then(this.onCharLoaded)
+			.catch(this.onError);
 	}
 
 	componentDidMount() {
@@ -30,12 +37,14 @@ export default class RandomChar extends Component {
 	}
 
 	render() {
-		const { char, loading } = this.state;
+		const { char, loading, error } = this.state;
 		const spinner = loading ? <Spinner /> : null;
-		const randomCharBlock = !loading ? <RandomCharBlock char={char} /> : null;
+		const errorMessage = error ? <ErrorMessage /> : null;
+		const randomCharBlock = !(loading || error) ? <RandomCharBlock char={char} /> : null;
 		return (
 			<div className="randomchar">
 				{spinner}
+				{errorMessage}
 				{randomCharBlock}
 				<div className="randomchar__static">
 					<p className="randomchar__title">
