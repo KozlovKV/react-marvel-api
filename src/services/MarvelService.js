@@ -15,8 +15,9 @@ export default class MarvelService {
 		return await response.json();
 	}
 
+	static _getCharactersMaxLimit = 100;
 	async getCharacters(limit) {
-		limit = limit <= 100 ? limit : 100;
+		limit = limit <= MarvelService._getCharactersMaxLimit ? limit : MarvelService._getCharactersMaxLimit;
 		const result = await this.get('characters', { limit, offset: 210 })
 		return result.data.results.map(this._getProcessedCharacter);
 	}
@@ -27,25 +28,31 @@ export default class MarvelService {
 	}
 
 	
-	static _maxDescriptionLength = 190;
+	static _maxShortedDescriptionLength = 190;
 	static _getShortedDescription(description) {
-
-		if (!description) { return 'Description not found'; }
-		if (description.length <= MarvelService._maxDescriptionLength) { return description; }
+		if (description.length <= MarvelService._maxShortedDescriptionLength) { 
+			return description; 
+		}
 
 		let words = description.split(' '), charLen = 0, i = 0;
-		while (charLen + words[i].length <= MarvelService._maxDescriptionLength) {
-			charLen += words[i].length;
-			i++;
-		}
+		words.forEach((word, index) => {
+			if (
+				charLen + word.length <= MarvelService._maxShortedDescriptionLength && 
+				index - i <= 1
+			) {
+				charLen += word.length;
+				i = index;
+			}
+		})
 		return words.slice(0, i).join(' ') + '…';
 	}
 
 	_getProcessedCharacter(charObj) {
-		const { id, name, description, thumbnail, urls } = charObj;
+		const { id, name, thumbnail, urls } = charObj;
 		let thumbnailUrl = thumbnail.path + '.' + thumbnail.extension,
 			homepageUrl = urls[0].url,
 			wikiUrl = urls[1].url,
+			description = !charObj.description ? 'Description not found' : charObj.description,
 			shortedDescription = MarvelService._getShortedDescription(description);
 		return {
 			id, name, description, thumbnailUrl, homepageUrl, wikiUrl, shortedDescription
