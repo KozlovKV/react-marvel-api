@@ -65,10 +65,11 @@ export default class RandomChar extends Component {
 }
 
 function RandomCharBlock({ char }) {
-	const { thumbnailUrl, name, homepageUrl, wikiUrl, shortedDescription } = char;
+	const { thumbnail, name, homepageUrl, wikiUrl, shortedDescription } = char;
+
 	return (
 		<div className="randomchar__block">
-			<img src={thumbnailUrl} alt={name} className="randomchar__img" />
+			<img src={thumbnail.url} alt={name} className="randomchar__img" style={thumbnail.style} />
 			<div className="randomchar__info">
 				<p className="randomchar__name">{name}</p>
 				<p className="randomchar__descr">

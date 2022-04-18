@@ -47,15 +47,26 @@ export default class MarvelService {
 		return words.slice(0, i).join(' ') + '…';
 	}
 
+	static _getThumbnailObj(thumbnail) {
+		let thumbnailObj = {
+			url: thumbnail.path + '.' + thumbnail.extension, 
+			style: {}
+		}
+		if (thumbnail.path.indexOf('image_not_available') > -1) {
+			thumbnailObj.style.objectFit = 'contain';
+		}
+		return thumbnailObj;
+	}
+
 	_getProcessedCharacter(charObj) {
-		const { id, name, thumbnail, urls } = charObj;
-		let thumbnailUrl = thumbnail.path + '.' + thumbnail.extension,
+		const { id, name, urls } = charObj;
+		let thumbnail = MarvelService._getThumbnailObj(charObj.thumbnail),
 			homepageUrl = urls[0].url,
 			wikiUrl = urls[1].url,
 			description = !charObj.description ? 'Description not found' : charObj.description,
 			shortedDescription = MarvelService._getShortedDescription(description);
 		return {
-			id, name, description, thumbnailUrl, homepageUrl, wikiUrl, shortedDescription
+			id, name, description, thumbnail, homepageUrl, wikiUrl, shortedDescription
 		}
 	}
 }
