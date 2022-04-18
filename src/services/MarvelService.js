@@ -26,13 +26,29 @@ export default class MarvelService {
 		return this._getProcessedCharacter(result.data.results[0]);
 	}
 
+	
+	_maxDescriptionLength = 190;
+	static _getShortedDescription(description) {
+
+		if (!description) { return 'Description not found'; }
+		if (description.length <= this._maxDescriptionLength) { return description; }
+
+		let words = description.split(' '), charLen = 0, i = 0;
+		while (charLen + words[i].length <= this._maxDescriptionLength) {
+			charLen += words[i].length;
+			i++;
+		}
+		return words.slice(0, i).join(' ') + '…';
+	}
+
 	_getProcessedCharacter(charObj) {
 		const { id, name, description, thumbnail, urls } = charObj;
 		let thumbnailUrl = thumbnail.path + '.' + thumbnail.extension,
 			homepageUrl = urls[0].url,
-			wikiUrl = urls[1].url;
+			wikiUrl = urls[1].url,
+			shortedDescription = MarvelService._getShortedDescription(description);
 		return {
-			id, name, description, thumbnailUrl, homepageUrl, wikiUrl
+			id, name, description, thumbnailUrl, homepageUrl, wikiUrl, shortedDescription
 		}
 	}
 }
