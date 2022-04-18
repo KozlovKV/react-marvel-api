@@ -31,7 +31,9 @@ export default class CharList extends Component {
 
 	getCharItems() {
 		const { characters } = this.state;
-		return characters.map(char => <CharItem key={char.id} {...char} />);
+		return characters.map(char => <CharItem key={char.id}
+												{...this.props}
+												{...char} />);
 	}
 
 	getLoadMoreButton() {

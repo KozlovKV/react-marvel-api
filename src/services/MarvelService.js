@@ -27,17 +27,17 @@ export default class MarvelService {
 		return this._getProcessedCharacter(result.data.results[0]);
 	}
 
-	
+
 	static _maxShortedDescriptionLength = 190;
 	static _getShortedDescription(description) {
-		if (description.length <= MarvelService._maxShortedDescriptionLength) { 
-			return description; 
+		if (description.length <= MarvelService._maxShortedDescriptionLength) {
+			return description;
 		}
 
 		let words = description.split(' '), charLen = 0, i = 0;
 		words.forEach((word, index) => {
 			if (
-				charLen + word.length <= MarvelService._maxShortedDescriptionLength && 
+				charLen + word.length <= MarvelService._maxShortedDescriptionLength &&
 				index - i <= 1
 			) {
 				charLen += word.length;
@@ -47,26 +47,29 @@ export default class MarvelService {
 		return words.slice(0, i).join(' ') + '…';
 	}
 
+	static _imgNotAvailableUrlParts = ['4c002e0305708', 'image_not_available']
 	static _getThumbnailObj(thumbnail) {
 		let thumbnailObj = {
-			url: thumbnail.path + '.' + thumbnail.extension, 
+			url: thumbnail.path + '.' + thumbnail.extension,
 			style: {}
 		}
-		if (thumbnail.path.indexOf('image_not_available') > -1) {
+		if (MarvelService._imgNotAvailableUrlParts.some(
+			urlPart => thumbnail.path.indexOf(urlPart) > -1
+		)) {
 			thumbnailObj.style.objectFit = 'contain';
 		}
 		return thumbnailObj;
 	}
 
 	_getProcessedCharacter(charObj) {
-		const { id, name, urls } = charObj;
+		const { id, name, urls, comics } = charObj;
 		let thumbnail = MarvelService._getThumbnailObj(charObj.thumbnail),
 			homepageUrl = urls[0].url,
 			wikiUrl = urls[1].url,
 			description = !charObj.description ? 'Description not found' : charObj.description,
 			shortedDescription = MarvelService._getShortedDescription(description);
 		return {
-			id, name, description, thumbnail, homepageUrl, wikiUrl, shortedDescription
+			id, name, description, thumbnail, homepageUrl, wikiUrl, shortedDescription, comics: comics.items
 		}
 	}
 }
