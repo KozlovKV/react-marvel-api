@@ -16,9 +16,13 @@ export default class MarvelService {
 	}
 
 	static _getCharactersMaxLimit = 100;
-	async getCharacters(limit) {
+	static _getCharactersBaseOffset = 210;
+	static _getCharactersMaxOffset = 1561;
+	async getCharacters(offsetDelta, limit=9) {
 		limit = limit <= MarvelService._getCharactersMaxLimit ? limit : MarvelService._getCharactersMaxLimit;
-		const result = await this.get('characters', { limit, offset: 210 })
+		let offset = MarvelService._getCharactersBaseOffset + offsetDelta;
+		offset = offset <= MarvelService._getCharactersMaxOffset ? offset : MarvelService._getCharactersMaxOffset;
+		const result = await this.get('characters', { limit, offset })
 		return result.data.results.map(this._getProcessedCharacter);
 	}
 

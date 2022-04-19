@@ -10,22 +10,26 @@ export default class CharList extends Component {
 	_loadMoreDelta = 9;
 	state = {
 		loading: true,
-		characters: []
-	}
+		characters: [],
+	};
 
 	marvelService = new MarvelService();
 
 	componentDidMount() {
-		this.loadCharacters(9);
+		this.loadCharacters();
 	}
 
-	onCharactersLoaded = (characters) => {
-		this.setState({ characters, loading: false })
+	onCharactersLoaded = (newCharacters) => {
+		this.setState(({ characters }) => ({ 
+			characters: [...characters, ...newCharacters], 
+			loading: false,
+		}));
 	}
 
-	loadCharacters = (loadLimit) => {
-		this.setState({ loading: true })
-		this.marvelService.getCharacters(loadLimit)
+	loadCharacters = () => {
+		const offset = this.state.characters.length;
+		this.setState({ loading: true, })
+		this.marvelService.getCharacters(offset)
 			.then(this.onCharactersLoaded);
 	}
 
@@ -37,19 +41,20 @@ export default class CharList extends Component {
 	}
 
 	getLoadMoreButton() {
+		const canLoadMore = this.canLoadMore();
 		return <button className="button button__main button__long"
-			onClick={this.onLoadMore}>
+			onClick={this.onLoadMore} disabled={!canLoadMore}>
 			<div className="inner">
-				{this.canLoadMore() ? "load more" : "Max characters loaded"}
+				{canLoadMore ? "load more" : "All characters loaded"}
 			</div>
 		</button>
 	}
 
-	canLoadMore() { return this.state.characters.length < 100; }
+	canLoadMore() { return this.state.characters.length < MarvelService._getCharactersMaxOffset - MarvelService._getCharactersBaseOffset; }
 
 	onLoadMore = () => {
 		if (this.canLoadMore()) {
-			this.loadCharacters(this.state.characters.length + this._loadMoreDelta);
+			this.loadCharacters();
 		}
 	}
 
