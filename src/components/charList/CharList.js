@@ -1,6 +1,5 @@
 import { Component } from "react";
 
-import CharItem from "../charItem/CharItem";
 import Spinner from "../spinner/Spinner";
 import MarvelService from "../../services/MarvelService";
 
@@ -19,9 +18,15 @@ export default class CharList extends Component {
 		this.loadCharacters();
 	}
 
+	onTABSelectChar = (e) => {
+		if (e.code === 'Tab' && e.target) {
+			this.props.onCharSelected(+e.target.dataset.id);
+		}
+	}
+
 	onCharactersLoaded = (newCharacters) => {
-		this.setState(({ characters }) => ({ 
-			characters: [...characters, ...newCharacters], 
+		this.setState(({ characters }) => ({
+			characters: [...characters, ...newCharacters],
 			loading: false,
 		}));
 	}
@@ -35,15 +40,26 @@ export default class CharList extends Component {
 
 	getCharItems() {
 		const { characters } = this.state;
-		return characters.map(char => <CharItem key={char.id}
-												{...this.props}
-												{...char} />);
+		return characters.map((char, i) => {
+			const { thumbnail, name, id } = char,
+				{ selectedCharId, onCharSelected } = this.props,
+				active = selectedCharId === id;
+			let itemClass = `char__item ${active ? 'char__item_selected' : ''}`;
+			return (
+				<li className={itemClass} tabIndex={i + 1}
+					onClick={() => onCharSelected(id)} key={i} data-id={id}>
+					<img src={thumbnail.url} alt={name} style={thumbnail.style} />
+					<div className="char__name">{name}</div>
+				</li>
+			)
+		});
 	}
 
 	getLoadMoreButton() {
-		const canLoadMore = this.canLoadMore();
+		const canLoadMore = this.canLoadMore(), btnIndex = this.state.characters.length;
 		return <button className="button button__main button__long"
-			onClick={this.onLoadMore} disabled={!canLoadMore}>
+			onClick={this.onLoadMore} disabled={!canLoadMore}
+			tabIndex={btnIndex}>
 			<div className="inner">
 				{canLoadMore ? "load more" : "All characters loaded"}
 			</div>
@@ -64,7 +80,7 @@ export default class CharList extends Component {
 		const button = !loading ? this.getLoadMoreButton() : null;
 		return (
 			<div className="char__list">
-				<ul className="char__grid">
+				<ul className="char__grid" onKeyUp={this.onTABSelectChar}>
 					{this.getCharItems()}
 				</ul>
 				{spinner}
