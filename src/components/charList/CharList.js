@@ -35,12 +35,9 @@ export default class CharList extends Component {
 	getCharItems() {
 		const { characters } = this.state;
 		return characters.map((char, i) => {
-			const { thumbnail, name, id } = char,
-				{ selectedCharId, onCharSelected } = this.props,
-				active = selectedCharId === id;
-			let itemClass = `char__item ${active ? 'char__item_selected' : ''}`;
+			const { thumbnail, name, id } = char, { onCharSelected } = this.props;
 			return (
-				<li className={itemClass} tabIndex="0"
+				<li className="char__item" tabIndex="0" role="treeitem"
 					onFocus={() => onCharSelected(id)} key={i} data-id={id}>
 					<img src={thumbnail.url} alt={name} style={thumbnail.style} />
 					<div className="char__name">{name}</div>
