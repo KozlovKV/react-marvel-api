@@ -1,41 +1,32 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 
 import Spinner from "../spinner/Spinner";
 import MarvelService from "../../services/MarvelService";
 
 import './charList.scss';
 
-export default class CharList extends Component {
-	_loadMoreDelta = 9;
-	state = {
-		loading: true,
-		characters: [],
-	};
+export default function CharList(props) {
+	const _loadMoreDelta = 9,
+		marvelService = new MarvelService();
+	
+	const [loading, setLoading] = useState(true),
+		[characters, setCharacters] = useState([]);
 
-	marvelService = new MarvelService();
-
-	componentDidMount() {
-		this.loadCharacters();
+	const onCharactersLoaded = (newCharacters) => {
+		setCharacters(characters => [...characters, ...newCharacters]);
+		setLoading(false);
 	}
 
-	onCharactersLoaded = (newCharacters) => {
-		this.setState(({ characters }) => ({
-			characters: [...characters, ...newCharacters],
-			loading: false,
-		}));
+	const loadCharacters = () => {
+		const offset = characters.length;
+		setLoading(true);
+		marvelService.getCharacters(offset, _loadMoreDelta)
+			.then(onCharactersLoaded);
 	}
 
-	loadCharacters = () => {
-		const offset = this.state.characters.length;
-		this.setState({ loading: true, })
-		this.marvelService.getCharacters(offset)
-			.then(this.onCharactersLoaded);
-	}
-
-	getCharItems() {
-		const { characters } = this.state;
+	const getCharItems = () => {
 		return characters.map((char, i) => {
-			const { thumbnail, name, id } = char, { onCharSelected } = this.props;
+			const { thumbnail, name, id } = char, { onCharSelected } = props;
 			return (
 				<li className="char__item" tabIndex="0" role="treeitem"
 					onFocus={() => onCharSelected(id)} key={i} data-id={id}>
@@ -46,37 +37,36 @@ export default class CharList extends Component {
 		});
 	}
 
-	getLoadMoreButton() {
-		const canLoadMore = this.canLoadMore();
+	const canLoadMore = () => characters.length < MarvelService._getCharactersMaxOffset - MarvelService._getCharactersBaseOffset;
+	const getLoadMoreButton = () => {
+		const canLoadMoreAnswer = canLoadMore();
 		return <button className="button button__main button__long"
-			onClick={this.onLoadMore} disabled={!canLoadMore}
+			onClick={onLoadMore} disabled={!canLoadMoreAnswer}
 			tabIndex="0">
 			<div className="inner">
-				{canLoadMore ? "load more" : "All characters loaded"}
+				{canLoadMoreAnswer ? "load more" : "All characters loaded"}
 			</div>
 		</button>
 	}
 
-	canLoadMore() { return this.state.characters.length < MarvelService._getCharactersMaxOffset - MarvelService._getCharactersBaseOffset; }
-
-	onLoadMore = () => {
-		if (this.canLoadMore()) {
-			this.loadCharacters();
+	const onLoadMore = () => {
+		if (canLoadMore()) {
+			loadCharacters();
 		}
 	}
 
-	render() {
-		const { loading } = this.state;
-		const spinner = loading ? <Spinner /> : null;
-		const button = !loading ? this.getLoadMoreButton() : null;
-		return (
-			<div className="char__list">
-				<ul className="char__grid">
-					{this.getCharItems()}
-				</ul>
-				{spinner}
-				{button}
-			</div>
-		);
-	}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	useEffect(loadCharacters, []);
+
+	const spinner = loading ? <Spinner /> : null;
+	const button = !loading ? getLoadMoreButton() : null;
+	return (
+		<div className="char__list">
+			<ul className="char__grid">
+				{getCharItems()}
+			</ul>
+			{spinner}
+			{button}
+		</div>
+	);
 }
