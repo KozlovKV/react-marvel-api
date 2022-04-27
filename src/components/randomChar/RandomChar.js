@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import MarvelService from './../../services/MarvelService';
+import useMarvelService from './../../services/MarvelService';
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
@@ -8,35 +8,18 @@ import './randomChar.scss';
 import mjolnirImg from '../../resources/img/mjolnir.png';
 
 export default function RandomChar() {
-	const marvelService = new MarvelService();
 
 	const [char, setChar] = useState({}),
-		[loading, setLoading] = useState(true),
-		[error, setError] = useState(false);
-
-
-	const onCharLoading = () => {
-		setLoading(true);
-		setError(false);
-	}
+		{loading, error, getCharacter} = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
-		setLoading(false);
-		setError(false);
-	}
-
-	const onError = () => {
-		setLoading(false);
-		setError(true);
 	}
 
 	const updateChar = () => {
 		let randomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-		onCharLoading();
-		marvelService.getCharacter(randomId)
-			.then(onCharLoaded)
-			.catch(onError);
+		getCharacter(randomId)
+			.then(onCharLoaded);
 	}
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,7 +27,7 @@ export default function RandomChar() {
 
 	const spinner = loading ? <Spinner /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
-	const randomCharBlock = !(loading || error) ? <RandomCharBlock char={char} /> : null;
+	const randomCharBlock = !(loading || error) && char.id ? <RandomCharBlock char={char} /> : null;
 	return (
 		<div className="randomchar">
 			{spinner}

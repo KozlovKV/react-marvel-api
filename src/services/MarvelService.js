@@ -1,79 +1,79 @@
-export default class MarvelService {
-	_apiBase = 'https://gateway.marvel.com:443/v1/public';
-	_apiKey = 'apikey=d840bc106aeea955689856e89bb25220';
+import useHttp from "../hooks/http.hook";
 
-	async get(urlPrefix, getParametersObject) {
-		let getParametersList = [this._apiKey];
+export default function useMarvelService() {
+	const _apiBase = 'https://gateway.marvel.com:443/v1/public';
+	const _apiKey = 'apikey=d840bc106aeea955689856e89bb25220';
+	const {loading, error, request} = useHttp();
+
+	async function get(urlPrefix, getParametersObject) {
+		let getParametersList = [_apiKey];
 		for (let key in getParametersObject) {
 			getParametersList.push(`${key}=${getParametersObject[key]}`);
 		}
-		let requestUrl = `${this._apiBase}/${urlPrefix}?${getParametersList.join('&')}`;
-		let response = await fetch(requestUrl);
-		if (!response.ok) {
-			throw new Error(`${response.code}: ${response.message}`);
-		}
-		return await response.json();
+		let requestUrl = `${_apiBase}/${urlPrefix}?${getParametersList.join('&')}`;
+		return request(requestUrl);
 	}
 
-	static _getCharactersMaxLimit = 100;
-	static _getCharactersBaseOffset = 210;
-	static _getCharactersMaxOffset = 1561;
-	async getCharacters(offsetDelta, limit=9) {
-		limit = limit <= MarvelService._getCharactersMaxLimit ? limit : MarvelService._getCharactersMaxLimit;
-		let offset = MarvelService._getCharactersBaseOffset + offsetDelta;
-		offset = offset <= MarvelService._getCharactersMaxOffset ? offset : MarvelService._getCharactersMaxOffset;
-		const result = await this.get('characters', { limit, offset })
-		return result.data.results.map(this._getProcessedCharacter);
+	const _getCharactersMaxLimit = 100;
+	const _getCharactersBaseOffset = 210;
+	const _getCharactersMaxOffset = 1561;
+	async function getCharacters(offsetDelta, limit = 9) {
+		limit = limit <= _getCharactersMaxLimit ? limit : _getCharactersMaxLimit;
+		let offset = _getCharactersBaseOffset + offsetDelta;
+		offset = offset <= _getCharactersMaxOffset ? offset : _getCharactersMaxOffset;
+		const result = await get('characters', { limit, offset })
+		return result.data.results.map(_getProcessedCharacter);
 	}
 
-	async getCharacter(id) {
-		const result = await this.get(`characters/${id}`)
-		return this._getProcessedCharacter(result.data.results[0]);
+	async function getCharacter(id) {
+		const result = await get(`characters/${id}`)
+		return _getProcessedCharacter(result.data.results[0]);
 	}
 
-
-	static _maxShortedDescriptionLength = 190;
-	static _getShortedDescription(description) {
-		if (description.length <= MarvelService._maxShortedDescriptionLength) {
-			return description;
-		}
-
-		let words = description.split(' '), charLen = 0, i = 0;
-		words.forEach((word, index) => {
-			if (
-				charLen + word.length <= MarvelService._maxShortedDescriptionLength &&
-				index - i <= 1
-			) {
-				charLen += word.length;
-				i = index;
-			}
-		})
-		return words.slice(0, i).join(' ') + '…';
-	}
-
-	static _imgNotAvailableUrlParts = ['4c002e0305708', 'image_not_available']
-	static _getThumbnailObj(thumbnail) {
-		let thumbnailObj = {
-			url: thumbnail.path + '.' + thumbnail.extension,
-			style: {}
-		}
-		if (MarvelService._imgNotAvailableUrlParts.some(
-			urlPart => thumbnail.path.indexOf(urlPart) > -1
-		)) {
-			thumbnailObj.style.objectFit = 'contain';
-		}
-		return thumbnailObj;
-	}
-
-	_getProcessedCharacter(charObj) {
+	function _getProcessedCharacter(charObj) {
 		const { id, name, urls, comics } = charObj;
-		let thumbnail = MarvelService._getThumbnailObj(charObj.thumbnail),
+		let thumbnail = _getThumbnailObj(charObj.thumbnail),
 			homepageUrl = urls[0].url,
 			wikiUrl = urls[1].url,
 			description = !charObj.description ? 'Description not found' : charObj.description,
-			shortedDescription = MarvelService._getShortedDescription(description);
+			shortedDescription = _getShortedDescription(description);
 		return {
 			id, name, description, thumbnail, homepageUrl, wikiUrl, shortedDescription, comics: comics.items
 		}
 	}
+
+	return {loading, error, getCharacter, getCharacters};
+}
+
+const _maxShortedDescriptionLength = 190;
+function _getShortedDescription(description) {
+	if (description.length <= _maxShortedDescriptionLength) {
+		return description;
+	}
+
+	let words = description.split(' '), charLen = 0, i = 0;
+	words.forEach((word, index) => {
+		if (
+			charLen + word.length <= _maxShortedDescriptionLength &&
+			index - i <= 1
+		) {
+			charLen += word.length;
+			i = index;
+		}
+	})
+	return words.slice(0, i).join(' ') + '…';
+}
+
+const _imgNotAvailableUrlParts = ['4c002e0305708', 'image_not_available']
+function _getThumbnailObj(thumbnail) {
+	let thumbnailObj = {
+		url: thumbnail.path + '.' + thumbnail.extension,
+		style: {}
+	}
+	if (_imgNotAvailableUrlParts.some(
+		urlPart => thumbnail.path.indexOf(urlPart) > -1
+	)) {
+		thumbnailObj.style.objectFit = 'contain';
+	}
+	return thumbnailObj;
 }
