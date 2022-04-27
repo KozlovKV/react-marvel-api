@@ -13,6 +13,7 @@ export default function useMarvelService() {
 		let requestUrl = `${_apiBase}/${urlPrefix}?${getParametersList.join('&')}`;
 		return request(requestUrl);
 	}
+
 	async function getCharacters(offsetDelta, limit = 9) {
 		limit = limit <= _getCharactersMaxLimit ? limit : _getCharactersMaxLimit;
 		let offset = _getCharactersBaseOffset + offsetDelta;
@@ -38,7 +39,26 @@ export default function useMarvelService() {
 		}
 	}
 
-	return {loading, error, getCharacter, getCharacters};
+	async function getComics(offsetDelta, limit = 8) {
+		limit = limit <= _getCharactersMaxLimit ? limit : _getCharactersMaxLimit;
+		let offset = _getCharactersBaseOffset + offsetDelta;
+		offset = offset <= _getCharactersMaxOffset ? offset : _getCharactersMaxOffset;
+		const result = await get('comics', { limit, offset })
+		return result.data.results.map(_getProcessedComic);
+	}
+
+	function _getProcessedComic(comicObj) {
+		const { id, title } = comicObj;
+		let thumbnail = _getThumbnailObj(comicObj.thumbnail),
+			price = comicObj.prices[0].price,
+			description = !comicObj.description ? 'Description not found' : comicObj.description,
+			shortedDescription = _getShortedDescription(description);
+		return {
+			id, title, price, description, thumbnail, shortedDescription,
+		}
+	}
+
+	return {loading, error, getCharacter, getCharacters, getComics};
 }
 
 const _getCharactersMaxLimit = 100;

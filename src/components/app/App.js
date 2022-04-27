@@ -9,6 +9,7 @@ import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 import './app.scss';
 
 import bgDecoration from '../../resources/img/vision.png';
+import ComicsList from '../comicsList/ComicsList';
 
 export default function App(props) {
 	const [selectedCharId, setSelectedCharId] = useState(0);
@@ -19,7 +20,8 @@ export default function App(props) {
 		<div className="app">
 			<AppHeader />
 			<main>
-				<ErrorBoundary>
+				<ComicsList />
+				{/* <ErrorBoundary>
 					<RandomChar />
 				</ErrorBoundary>
 				<div className="char__content">
@@ -30,7 +32,7 @@ export default function App(props) {
 						<CharInfo selectedCharId={selectedCharId} />
 					</ErrorBoundary>
 				</div>
-				<img className="bg-decoration" src={bgDecoration} alt="vision" />
+				<img className="bg-decoration" src={bgDecoration} alt="vision" /> */}
 			</main>
 		</div>
 	);
