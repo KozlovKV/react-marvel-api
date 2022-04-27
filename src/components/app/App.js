@@ -22,14 +22,14 @@ export default function App(props) {
 				<ErrorBoundary>
 					<RandomChar />
 				</ErrorBoundary>
-				{/* <div className="char__content">
+				<div className="char__content">
 					<ErrorBoundary>
-						<CharList onCharSelected={onCharSelected} />
+						<CharList selectedCharId={selectedCharId} onCharSelected={onCharSelected} />
 					</ErrorBoundary>
 					<ErrorBoundary>
 						<CharInfo selectedCharId={selectedCharId} />
 					</ErrorBoundary>
-				</div> */}
+				</div>
 				<img className="bg-decoration" src={bgDecoration} alt="vision" />
 			</main>
 		</div>

@@ -3,41 +3,25 @@ import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Skeleton from "../skeleton/Skeleton";
 
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 
 import './charInfo.scss';
 
 
 export default function CharInfo(props) {
-	const marvelService = new MarvelService();
 
 	const [char, setChar] = useState(null),
-		[loading, setLoading] = useState(false),
-		[error, setError] = useState(false);
-
-	const onCharLoading = () => {
-		setLoading(true);
-		setError(false);
-	}
+		{loading, error, getCharacter} = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
-		setLoading(false);
-		setError(false);
-	}
-
-	const onError = () => {
-		setLoading(false);
-		setError(true);
 	}
 
 	const updateCharInfo = () => {
 		const { selectedCharId } = props;
 		if (selectedCharId) {
-			onCharLoading();
-			marvelService.getCharacter(selectedCharId)
-				.then(onCharLoaded)
-				.catch(onError);
+			getCharacter(selectedCharId)
+				.then(onCharLoaded);
 		}
 	}
 

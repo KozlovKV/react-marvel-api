@@ -13,10 +13,6 @@ export default function useMarvelService() {
 		let requestUrl = `${_apiBase}/${urlPrefix}?${getParametersList.join('&')}`;
 		return request(requestUrl);
 	}
-
-	const _getCharactersMaxLimit = 100;
-	const _getCharactersBaseOffset = 210;
-	const _getCharactersMaxOffset = 1561;
 	async function getCharacters(offsetDelta, limit = 9) {
 		limit = limit <= _getCharactersMaxLimit ? limit : _getCharactersMaxLimit;
 		let offset = _getCharactersBaseOffset + offsetDelta;
@@ -44,6 +40,10 @@ export default function useMarvelService() {
 
 	return {loading, error, getCharacter, getCharacters};
 }
+
+const _getCharactersMaxLimit = 100;
+export const _getCharactersBaseOffset = 210;
+export const _getCharactersMaxOffset = 1561;
 
 const _maxShortedDescriptionLength = 190;
 function _getShortedDescription(description) {

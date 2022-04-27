@@ -1,34 +1,32 @@
 import { useState, useEffect } from "react";
 
 import Spinner from "../spinner/Spinner";
-import MarvelService from "../../services/MarvelService";
+import useMarvelService, {_getCharactersMaxOffset, _getCharactersBaseOffset} from "../../services/MarvelService";
 
 import './charList.scss';
 
 export default function CharList(props) {
-	const _loadMoreDelta = 9,
-		marvelService = new MarvelService();
+	const _loadMoreDelta = 9;
 	
-	const [loading, setLoading] = useState(true),
-		[characters, setCharacters] = useState([]);
+	const [characters, setCharacters] = useState([]),
+		{loading, error, getCharacters} = useMarvelService();
 
 	const onCharactersLoaded = (newCharacters) => {
 		setCharacters(characters => [...characters, ...newCharacters]);
-		setLoading(false);
 	}
 
 	const loadCharacters = () => {
 		const offset = characters.length;
-		setLoading(true);
-		marvelService.getCharacters(offset, _loadMoreDelta)
+		getCharacters(offset, _loadMoreDelta)
 			.then(onCharactersLoaded);
 	}
 
 	const getCharItems = () => {
 		return characters.map((char, i) => {
-			const { thumbnail, name, id } = char, { onCharSelected } = props;
+			const { thumbnail, name, id } = char, { selectedCharId, onCharSelected } = props;
+			const classes = `char__item ${selectedCharId === id ? 'char__item_selected' : null}`;
 			return (
-				<li className="char__item" tabIndex="0" role="treeitem"
+				<li className={classes} tabIndex="0" role="treeitem"
 					onFocus={() => onCharSelected(id)} key={i} data-id={id}>
 					<img src={thumbnail.url} alt={name} style={thumbnail.style} />
 					<div className="char__name">{name}</div>
@@ -37,7 +35,7 @@ export default function CharList(props) {
 		});
 	}
 
-	const canLoadMore = () => characters.length < MarvelService._getCharactersMaxOffset - MarvelService._getCharactersBaseOffset;
+	const canLoadMore = () => characters.length < _getCharactersMaxOffset - _getCharactersBaseOffset;
 	const getLoadMoreButton = () => {
 		const canLoadMoreAnswer = canLoadMore();
 		return <button className="button button__main button__long"
