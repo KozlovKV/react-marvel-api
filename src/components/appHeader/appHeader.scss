@@ -30,6 +30,10 @@
 				a:hover {
 					color: $main-color;
 				}
+
+				a.active {
+					color: $main-color;
+				}
 			}
 		}
 	}
