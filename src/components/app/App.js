@@ -10,6 +10,7 @@ import './app.scss';
 
 import bgDecoration from '../../resources/img/vision.png';
 import ComicsList from '../comicsList/ComicsList';
+import AppBanner from '../appBanner/AppBanner';
 
 export default function App(props) {
 	const [selectedCharId, setSelectedCharId] = useState(0);
@@ -20,6 +21,7 @@ export default function App(props) {
 		<div className="app">
 			<AppHeader />
 			<main>
+				<AppBanner />
 				<ComicsList />
 				{/* <ErrorBoundary>
 					<RandomChar />
