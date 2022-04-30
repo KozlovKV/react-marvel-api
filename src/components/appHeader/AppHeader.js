@@ -13,9 +13,9 @@ export default function AppHeader(props) {
 			</h1>
 			<nav className="app__menu">
 				<ul>
-					<li><NavLink exact activeClassName="active" to="/">Characters</NavLink></li>
+					<li><NavLink to="/">Characters</NavLink></li>
 					/
-					<li><NavLink exact activeClassName="active" to="/comics">Comics</NavLink></li>
+					<li><NavLink to="/comics">Comics</NavLink></li>
 				</ul>
 			</nav>
 		</header>
