@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import AppHeader from '../appHeader/AppHeader';
-import { MainPage, ComicsPage } from '../pages';
+import { MainPage, ComicsPage, Page404 } from '../pages';
 
 import './app.scss';
 
@@ -12,8 +12,10 @@ export default function App() {
 				<AppHeader />
 				<main>
 					<Routes>
+						<Route path="/react-marvel-api" element={<Navigate to="/" />}/>
 						<Route path="/" element={<MainPage/>} />
 						<Route path="/comics" element={<ComicsPage/>} />
+						<Route path="*" element={<Page404 />} />
 					</Routes>
 				</main>
 			</div>
