@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
-import useMarvelService, { _getCharactersMaxOffset, _getCharactersBaseOffset } from "../../services/MarvelService";
+import useMarvelService, { _getComicsMaxOffset, _getComicsBaseOffset } from "../../services/MarvelService";
 
 import './comicsList.scss';
 
@@ -38,7 +38,7 @@ export default function ComicsList(props) {
 		});
 	}
 
-	const canLoadMore = () => comics.length < _getCharactersMaxOffset - _getCharactersBaseOffset;
+	const canLoadMore = () => comics.length < _getComicsMaxOffset - _getComicsBaseOffset;
 	const getLoadMoreButton = () => {
 		const canLoadMoreAnswer = canLoadMore();
 		return <button className="button button__main button__long"
