@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import Spinner from "../spinner/Spinner";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 import useMarvelService, { _getCharactersMaxOffset, _getCharactersBaseOffset } from "../../services/MarvelService";
 
 import './comicsList.scss';
@@ -59,6 +60,7 @@ export default function ComicsList(props) {
 	useEffect(loadComics, []);
 
 	const spinner = loading ? <Spinner /> : null;
+	const errorMessage = error ? <ErrorMessage /> : null;
 	const button = !loading ? getLoadMoreButton() : null;
 	return (
 		<div className="comics__list">
@@ -66,6 +68,7 @@ export default function ComicsList(props) {
 				{getComicsItems()}
 			</ul>
 			{spinner}
+			{errorMessage}
 			{button}
 		</div>
 	);

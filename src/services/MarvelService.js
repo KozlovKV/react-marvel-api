@@ -40,9 +40,9 @@ export default function useMarvelService() {
 	}
 
 	async function getComics(offsetDelta, limit = 8) {
-		limit = limit <= _getCharactersMaxLimit ? limit : _getCharactersMaxLimit;
-		let offset = _getCharactersBaseOffset + offsetDelta;
-		offset = offset <= _getCharactersMaxOffset ? offset : _getCharactersMaxOffset;
+		limit = limit <= _getComicsMaxLimit ? limit : _getComicsMaxLimit;
+		let offset = _getComicsBaseOffset + offsetDelta;
+		offset = offset <= _getComicsMaxOffset ? offset : _getComicsMaxOffset;
 		const result = await get('comics', { limit, offset })
 		return result.data.results.map(_getProcessedComic);
 	}
@@ -70,6 +70,10 @@ export default function useMarvelService() {
 const _getCharactersMaxLimit = 100;
 export const _getCharactersBaseOffset = 210;
 export const _getCharactersMaxOffset = 1561;
+
+const _getComicsMaxLimit = 100;
+export const _getComicsBaseOffset = 0;
+export const _getComicsMaxOffset = 1561;
 
 const _maxShortedDescriptionLength = 190;
 function _getShortedDescription(description) {
