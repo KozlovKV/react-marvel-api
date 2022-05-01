@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import Spinner from "../spinner/Spinner";
 import useMarvelService, { _getCharactersMaxOffset, _getCharactersBaseOffset } from "../../services/MarvelService";
@@ -26,11 +27,11 @@ export default function ComicsList(props) {
 			const { id, thumbnail, title, price } = comic;
 			return (
 				<li className="comics__item" key={id}>
-					<a href="./">
+					<Link to={`/comics/${id}`}>
 						<img src={thumbnail.url} alt={title} className="comics__item-img" style={thumbnail.style} />
 						<div className="comics__item-name">{title}</div>
 						<div className="comics__item-price">{price}$</div>
-					</a>
+					</Link>
 				</li>
 			)
 		});

@@ -47,18 +47,24 @@ export default function useMarvelService() {
 		return result.data.results.map(_getProcessedComic);
 	}
 
+	async function getComic(comicId) {
+		const result = await get(`comics/${comicId}`);
+		return _getProcessedComic(result.data.results[0]);
+	}
+
 	function _getProcessedComic(comicObj) {
-		const { id, title } = comicObj;
+		const { id, title, pageCount } = comicObj;
 		let thumbnail = _getThumbnailObj(comicObj.thumbnail),
 			price = comicObj.prices[0].price,
 			description = !comicObj.description ? 'Description not found' : comicObj.description,
-			shortedDescription = _getShortedDescription(description);
+			shortedDescription = _getShortedDescription(description),
+			language= comicObj.textObjects.language || 'en-us';
 		return {
-			id, title, price, description, thumbnail, shortedDescription,
+			id, title, pageCount, price, description, thumbnail, shortedDescription, language,
 		}
 	}
 
-	return {loading, error, getCharacter, getCharacters, getComics};
+	return {loading, error, getCharacter, getCharacters, getComic, getComics};
 }
 
 const _getCharactersMaxLimit = 100;
