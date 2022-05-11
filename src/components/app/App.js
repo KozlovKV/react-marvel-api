@@ -11,6 +11,14 @@ const ComicsPage = lazy(() => import('../pages/ComicsPage'));
 const SingleComicPage = lazy(() => import('../pages/SingleComicPage'));
 const Page404 = lazy(() => import('../pages/404'));
 
+const routes = [
+	{path: '/', element: <MainPage />},
+	{path: '/react-marvel-api', element: <Navigate to="/" />},
+	{path: '/comics', element: <ComicsPage />},
+	{path: '/comics/:comicId', element: <SingleComicPage />},
+	{path: '*', element: <Page404 />},
+]
+
 export default function App() {
 	return (
 		<Suspense fallback={<Spinner />}>
@@ -19,11 +27,7 @@ export default function App() {
 					<AppHeader />
 					<main>
 						<Routes>
-							<Route path="/react-marvel-api" element={<Navigate to="/" />} />
-							<Route path="/" element={<MainPage />} />
-							<Route path="/comics" element={<ComicsPage />} />
-							<Route path="/comics/:comicId" element={<SingleComicPage />} />
-							<Route path="*" element={<Page404 />} />
+							{routes.map(routeObj => <Route {...routeObj} />)}
 						</Routes>
 					</main>
 				</div>
