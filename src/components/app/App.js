@@ -27,7 +27,7 @@ export default function App() {
 					<AppHeader />
 					<main>
 						<Routes>
-							{routes.map(routeObj => <Route {...routeObj} />)}
+							{routes.map(routeObj => <Route key={routeObj.path} {...routeObj} />)}
 						</Routes>
 					</main>
 				</div>

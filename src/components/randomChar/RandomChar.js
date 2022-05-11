@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import useMarvelService from './../../services/MarvelService';
+
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
+import AnimatedAppearance from "../animatedAppearance/AnimatedAppearance";
+
+import useMarvelService from './../../services/MarvelService';
 
 import './randomChar.scss';
 
@@ -30,9 +33,15 @@ export default function RandomChar() {
 	const randomCharBlock = !(loading || error) && char.id ? <RandomCharBlock char={char} /> : null;
 	return (
 		<div className="randomchar">
-			{spinner}
-			{errorMessage}
-			{randomCharBlock}
+			<AnimatedAppearance in={loading}>
+				{spinner}
+			</AnimatedAppearance>
+			<AnimatedAppearance in={!loading}>
+				<>
+					{randomCharBlock}
+					{errorMessage}
+				</>
+			</AnimatedAppearance>
 			<div className="randomchar__static">
 				<p className="randomchar__title">
 					Random character for today!<br />

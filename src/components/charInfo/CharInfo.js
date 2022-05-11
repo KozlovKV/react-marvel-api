@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Skeleton from "../skeleton/Skeleton";
+import AnimatedAppearance from "../animatedAppearance/AnimatedAppearance";
 
 import useMarvelService from "../../services/MarvelService";
 
@@ -11,7 +13,7 @@ import './charInfo.scss';
 export default function CharInfo(props) {
 
 	const [char, setChar] = useState(null),
-		{loading, error, getCharacter} = useMarvelService();
+		{ loading, error, getCharacter } = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
@@ -36,9 +38,13 @@ export default function CharInfo(props) {
 	return (
 		<div className="char__info">
 			{skeleton}
-			{spinner}
-			{errorMessage}
-			{charInfoBlock}
+			<AnimatedAppearance in={loading}>
+				{spinner}
+			</AnimatedAppearance>
+			<AnimatedAppearance in={!loading}>
+				{errorMessage}
+				{charInfoBlock}
+			</AnimatedAppearance>
 		</div>
 	);
 }

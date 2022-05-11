@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
+import AnimatedAppearance from "../animatedAppearance/AnimatedAppearance";
+
 import useMarvelService, { _getComicsMaxOffset, _getComicsBaseOffset } from "../../services/MarvelService";
 
 import './comicsList.scss';
@@ -45,7 +47,7 @@ export default function ComicsList(props) {
 			onClick={onLoadMore} disabled={!canLoadMoreAnswer}
 			tabIndex="0">
 			<div className="inner">
-				{canLoadMoreAnswer ? "load more" : "All characters loaded"}
+				{canLoadMoreAnswer ? "load more" : "All comics loaded"}
 			</div>
 		</button>
 	}
@@ -64,12 +66,16 @@ export default function ComicsList(props) {
 	const button = !loading ? getLoadMoreButton() : null;
 	return (
 		<div className="comics__list">
-			<ul className="comics__grid">
-				{getComicsItems()}
-			</ul>
-			{spinner}
-			{errorMessage}
-			{button}
+			<AnimatedAppearance in={!loading} unmountOnExit>
+				<ul className="comics__grid">
+					{getComicsItems()}
+				</ul>
+				{errorMessage}
+				{button}
+			</AnimatedAppearance>
+			<AnimatedAppearance in={loading} mountOnEnter>
+				{spinner}
+			</AnimatedAppearance>
 		</div>
 	);
 }

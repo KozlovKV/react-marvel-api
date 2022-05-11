@@ -1,0 +1,18 @@
+$animation: all 300ms ease-in-out;
+
+.appearance {
+	&-enter {
+		opacity: 0;
+	}
+	&-enter-active {
+		opacity: 1;
+		transition: $animation;
+	}
+	&-exit {
+		opacity: 1;
+	}
+	&-exit-active {
+		opacity: 0;
+		transition: $animation;
+	}
+}

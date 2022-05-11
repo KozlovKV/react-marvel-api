@@ -1,30 +1,34 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from './../errorMessage/ErrorMessage';
+import AnimatedAppearance from '../animatedAppearance/AnimatedAppearance';
+
+import useMarvelService from '../../services/MarvelService';
 
 import './singleComic.scss';
 
 export default function SingleComic(props) {
 	const { comicId } = props;
 	const { loading, error, getComic } = useMarvelService();
-	const [ comic, setComic ] = useState(null);
+	const [comic, setComic] = useState(null);
 
 	useEffect(() => {
 		getComic(comicId).then(setComic);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [comicId]);
 
-	const spinner = loading ? <Spinner/> : null;
-	const errorMessage = error ? <ErrorMessage/> : null; 
+	const spinner = loading ? <Spinner /> : null;
+	const errorMessage = error ? <ErrorMessage /> : null;
 	const comicBlock = !(loading || error) && comic ? getComicBlock(comic) : null;
 	return (
 		<>
 			{spinner}
-			{errorMessage}
-			{comicBlock}
+			<AnimatedAppearance in={!loading}>
+				{errorMessage}
+				{comicBlock}
+			</AnimatedAppearance>
 		</>
 	);
 }
