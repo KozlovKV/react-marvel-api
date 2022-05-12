@@ -3,6 +3,8 @@ import { useState } from 'react';
 import RandomChar from '../randomChar/RandomChar';
 import CharList from '../charList/CharList';
 import CharInfo from '../charInfo/CharInfo';
+import CharFindForm from '../charFindForm/CharFindForm';
+
 import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 
 import bgDecoration from '../../resources/img/vision.png';
@@ -21,9 +23,14 @@ export default function MainPage() {
 				<ErrorBoundary>
 					<CharList selectedCharId={selectedCharId} onCharSelected={onCharSelected} />
 				</ErrorBoundary>
-				<ErrorBoundary>
-					<CharInfo selectedCharId={selectedCharId} />
-				</ErrorBoundary>
+				<div>
+					<ErrorBoundary>
+						<CharInfo selectedCharId={selectedCharId} />
+					</ErrorBoundary>
+					<ErrorBoundary>
+						<CharFindForm />
+					</ErrorBoundary>
+				</div>
 			</div>
 			<img className="bg-decoration" src={bgDecoration} alt="vision" />
 		</>
