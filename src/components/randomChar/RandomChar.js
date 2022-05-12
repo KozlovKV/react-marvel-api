@@ -13,7 +13,7 @@ import mjolnirImg from '../../resources/img/mjolnir.png';
 export default function RandomChar() {
 
 	const [char, setChar] = useState({}),
-		{loading, error, getCharacter} = useMarvelService();
+		{ loading, error, getCharacter } = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
@@ -37,10 +37,8 @@ export default function RandomChar() {
 				{spinner}
 			</AnimatedAppearance>
 			<AnimatedAppearance in={!loading}>
-				<>
-					{randomCharBlock}
-					{errorMessage}
-				</>
+				{randomCharBlock}
+				{errorMessage}
 			</AnimatedAppearance>
 			<div className="randomchar__static">
 				<p className="randomchar__title">
