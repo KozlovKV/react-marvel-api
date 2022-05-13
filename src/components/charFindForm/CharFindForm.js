@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -12,10 +13,27 @@ export default function CharFindForm(props) {
 	const { loading, getCharactersByNamePart } = useMarvelService();
 	const [chars, setChars] = useState([]);
 
-	useEffect(() => { console.log(chars) }, [chars]);
+	function getCharsResultList() {
+		if (!chars.length) return null;
+		return <>
+			<h3 className="success">
+				Founded {chars.length} char{chars.length > 1 ? 's' : ''}
+			</h3>
+			<ul className="char__find__results-list">
+				{chars.map(char =>
+					<li key={char.id} className="row char__find__results-item">
+						<h4>{char.name}</h4>
+						<Link to={`/chars/${char.id}`} className="button button__secondary">
+							<div className="inner">char page</div>
+						</Link>
+					</li>
+				)}
+			</ul>
+		</>
+	}
 
 	return <div className="char__find">
-		<h3>Or find a character by name:</h3>
+		<h3>Or find a characters by name:</h3>
 		<Formik
 			initialValues={{ name: '' }}
 			validationSchema={Yup.object({
@@ -29,20 +47,13 @@ export default function CharFindForm(props) {
 			<Form className="char__find__form row">
 				<Field name="name" placeholder="Enter name" />
 				{!loading ?
-				<button className="button button__main">
-					<div className="inner">find</div>
-				</button>
-				: <Spinner />}
+					<button type="submit" className="button button__main">
+						<div className="inner">find</div>
+					</button>
+					: <Spinner />}
 				<ErrorMessage name="name" className="error" component="h3" />
 			</Form>
 		</Formik>
-		{chars.length ? <div className="row">
-			<h3 className="success">
-				Founded {chars.length} char{chars.length > 1 ? 's' : ''}
-			</h3>
-			<button className="button button__secondary">
-				<div className="inner">Char page</div>
-			</button>
-		</div> : null}
+		{getCharsResultList()}
 	</div>
 }

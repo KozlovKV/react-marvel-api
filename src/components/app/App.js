@@ -8,14 +8,16 @@ import './app.scss';
 
 const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
-const SingleComicPage = lazy(() => import('../pages/SingleComicPage'));
+const SingleItemPage = lazy(() => import('../pages/SingleItemPage'));
 const Page404 = lazy(() => import('../pages/404'));
 
 const routes = [
-	{path: '/', element: <MainPage />},
-	{path: '/react-marvel-api', element: <Navigate to="/" />},
+	{path: '/', element: <Navigate to="/chars" />},
+	{path: '/react-marvel-api', element: <Navigate to="/chars" />},
+	{path: '/chars', element: <MainPage />},
+	{path: '/chars/:id', element: <SingleItemPage />},
 	{path: '/comics', element: <ComicsPage />},
-	{path: '/comics/:comicId', element: <SingleComicPage />},
+	{path: '/comics/:id', element: <SingleItemPage />},
 	{path: '*', element: <Page404 />},
 ]
 
