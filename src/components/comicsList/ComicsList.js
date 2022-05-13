@@ -61,7 +61,7 @@ export default function ComicsList(props) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(loadComics, []);
 
-	const spinner = loading ? <Spinner /> : null;
+	const spinner = loading ? <Spinner width="250px" /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const button = !loading ? getLoadMoreButton() : null;
 	return (
