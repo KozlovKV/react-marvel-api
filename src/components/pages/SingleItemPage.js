@@ -9,7 +9,7 @@ export default function SingleItemPage() {
 
 	return ( <>
 		<AppBanner />
-		<SingleItem itemId={parapms.id} type={type} />
+		<SingleItem itemId={parapms.id} dataType={type} />
 	</>
 	);
 }
