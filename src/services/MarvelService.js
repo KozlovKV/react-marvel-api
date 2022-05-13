@@ -22,6 +22,11 @@ export default function useMarvelService() {
 		return result.data.results.map(_getProcessedCharacter);
 	}
 
+	async function getCharactersByNamePart(name) {
+		const result = await get('characters', { nameStartsWith: name, limit: 100 })
+		return result.data.results.map(_getProcessedCharacter);
+	}
+
 	async function getCharacter(id) {
 		const result = await get(`characters/${id}`)
 		return _getProcessedCharacter(result.data.results[0]);
@@ -64,7 +69,15 @@ export default function useMarvelService() {
 		}
 	}
 
-	return {loading, error, getCharacter, getCharacters, getComic, getComics};
+	return {
+		loading, 
+		error, 
+		getCharacter, 
+		getCharacters, 
+		getCharactersByNamePart, 
+		getComic, 
+		getComics
+	};
 }
 
 const _getCharactersMaxLimit = 100;
