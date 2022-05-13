@@ -14,6 +14,7 @@ export default function CharFindForm(props) {
 	const [chars, setChars] = useState([]);
 
 	function getCharsResultList() {
+		if (loading) return <Spinner width="150px" />;
 		if (!chars.length) return null;
 		return <>
 			<h3 className="success">
@@ -46,11 +47,9 @@ export default function CharFindForm(props) {
 		>
 			<Form className="char__find__form row">
 				<Field name="name" placeholder="Enter name" />
-				{!loading ?
-					<button type="submit" className="button button__main">
-						<div className="inner">find</div>
-					</button>
-					: <Spinner />}
+				<button type="submit" className="button button__main">
+					<div className="inner">find</div>
+				</button>
 				<ErrorMessage name="name" className="error" component="h3" />
 			</Form>
 		</Formik>

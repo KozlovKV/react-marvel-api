@@ -23,7 +23,7 @@ const routes = [
 
 export default function App() {
 	return (
-		<Suspense fallback={<Spinner />}>
+		<Suspense fallback={<Spinner width="400px" />}>
 			<Router>
 				<div className="app">
 					<AppHeader />

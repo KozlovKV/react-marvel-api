@@ -28,7 +28,7 @@ export default function RandomChar() {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(updateChar, []);
 
-	const spinner = loading ? <Spinner /> : null;
+	const spinner = loading ? <Spinner width="250px" /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const randomCharBlock = !(loading || error) && char.id ? <RandomCharBlock char={char} /> : null;
 	return (
