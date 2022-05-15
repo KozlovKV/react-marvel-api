@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Helmet from 'react-helmet';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -47,6 +48,10 @@ export default function SingleComic(props) {
 function BaseSingleItemBlock(props) {
 	const { thumbnail, title, description, children, backPath } = props;
 	return <div className="single-item">
+		<Helmet>
+			<meta name="description" content="All Marvel's comics" />
+			<title>{title}</title>
+		</Helmet>
 		<img src={thumbnail.url} alt={title}
 			className="single-item__img" style={thumbnail.style} />
 		<div className="single-item__info">
@@ -62,6 +67,9 @@ function BaseSingleItemBlock(props) {
 
 function ComicBlock({ pageCount, language, price, ...props }) {
 	return <BaseSingleItemBlock backPath="/comics" {...props}>
+		<Helmet>
+			<meta name="description" content={`${props.title} comic`} />
+		</Helmet>
 		<p className="single-item__descr">{pageCount} pages</p>
 		<p className="single-item__descr">Language: {language}</p>
 		<div className="single-item__price">{price}$</div>
@@ -69,5 +77,9 @@ function ComicBlock({ pageCount, language, price, ...props }) {
 }
 
 function CharBlock(props) {
-	return <BaseSingleItemBlock backPath="/chars" {...props} />
+	return <BaseSingleItemBlock backPath="/chars" title={props.name} {...props}>
+		<Helmet>
+			<meta name="description" content={`${props.name} character`} />
+		</Helmet>
+	</BaseSingleItemBlock>
 }
