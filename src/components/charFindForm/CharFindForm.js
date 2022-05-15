@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 import Spinner from '../spinner/Spinner';
+import AnimatedAppearance from './../animatedAppearance/AnimatedAppearance';
 
 import useMarvelService from '../../services/MarvelService';
 
@@ -53,6 +54,8 @@ export default function CharFindForm(props) {
 				<ErrorMessage name="name" className="error" component="h3" />
 			</Form>
 		</Formik>
-		{getCharsResultList()}
+		<AnimatedAppearance in={!loading}>
+			{getCharsResultList()}
+		</AnimatedAppearance>
 	</div>
 }
