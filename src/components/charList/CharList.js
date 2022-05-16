@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import AnimatedAppearance from "../animatedAppearance/AnimatedAppearance";
 import useMarvelService, { _getCharactersMaxOffset, _getCharactersBaseOffset } from "../../services/MarvelService";
 
+import withFiniteState from './../../hocs/withFiniteState';
+
 import './charList.scss';
+
+const CharItemsWithFiniteStateMachine = withFiniteState();
 
 export default function CharList(props) {
 	const _loadMoreDelta = 9;
 
 	const [characters, setCharacters] = useState([]),
-		{ loading, error, getCharacters } = useMarvelService();
+		{ processState, setProcessState, getCharacters } = useMarvelService();
 
 	const onCharactersLoaded = (newCharacters) => {
 		setCharacters(characters => [...characters, ...newCharacters]);
@@ -20,7 +21,8 @@ export default function CharList(props) {
 	const loadCharacters = () => {
 		const offset = characters.length;
 		getCharacters(offset, _loadMoreDelta)
-			.then(onCharactersLoaded);
+			.then(onCharactersLoaded)
+			.then(() => setProcessState('success'));
 	}
 
 	const getCharItems = () => {
@@ -41,7 +43,7 @@ export default function CharList(props) {
 	const getLoadMoreButton = () => {
 		const canLoadMoreAnswer = canLoadMore();
 		return <button className="button button__main button__long"
-			onClick={onLoadMore} disabled={!canLoadMoreAnswer}
+			onClick={onLoadMore} disabled={!canLoadMoreAnswer || processState === 'loading'}
 			tabIndex="0">
 			<div className="inner">
 				{canLoadMoreAnswer ? "load more" : "All characters loaded"}
@@ -58,21 +60,14 @@ export default function CharList(props) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(loadCharacters, []);
 
-	const spinner = loading ? <Spinner width="250px" /> : null;
-	const errorMessage = error ? <ErrorMessage /> : null;
-	const button = !loading ? getLoadMoreButton() : null;
 	return (
 		<div className="char__list">
-			<AnimatedAppearance in={!loading} unmountOnExit>
+			<CharItemsWithFiniteStateMachine state={processState}>
 				<ul className="char__grid">
 					{getCharItems()}
 				</ul>
-				{errorMessage}
-				{button}
-			</AnimatedAppearance>
-			<AnimatedAppearance in={loading} mountOnEnter>
-				{spinner}
-			</AnimatedAppearance>
+				{getLoadMoreButton()}
+			</CharItemsWithFiniteStateMachine>
 		</div>
 	);
 }

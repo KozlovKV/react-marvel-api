@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 
+import withFiniteState from './../../hocs/withFiniteState';
 import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import AnimatedAppearance from "../animatedAppearance/AnimatedAppearance";
-
 import useMarvelService from './../../services/MarvelService';
 
 import './randomChar.scss';
 
 import mjolnirImg from '../../resources/img/mjolnir.png';
 
+const RandomCharBlockWithFiniteStateMachine = withFiniteState({
+	loading: () => <Spinner width="250px" />,
+});
+
 export default function RandomChar() {
 
 	const [char, setChar] = useState({}),
-		{ loading, error, getCharacter } = useMarvelService();
+		{ processState, setProcessState, getCharacter } = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
@@ -22,24 +24,18 @@ export default function RandomChar() {
 	const updateChar = () => {
 		let randomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
 		getCharacter(randomId)
-			.then(onCharLoaded);
+			.then(onCharLoaded)
+			.then(() => setProcessState('success'));
 	}
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(updateChar, []);
 
-	const spinner = loading ? <Spinner width="250px" /> : null;
-	const errorMessage = error ? <ErrorMessage /> : null;
-	const randomCharBlock = !(loading || error) && char.id ? <RandomCharBlock char={char} /> : null;
 	return (
 		<div className="randomchar">
-			<AnimatedAppearance in={loading}>
-				{spinner}
-			</AnimatedAppearance>
-			<AnimatedAppearance in={!loading}>
-				{randomCharBlock}
-				{errorMessage}
-			</AnimatedAppearance>
+			<RandomCharBlockWithFiniteStateMachine state={processState}>
+				<RandomCharBlock char={char} />
+			</RandomCharBlockWithFiniteStateMachine>
 			<div className="randomchar__static">
 				<p className="randomchar__title">
 					Random character for today!<br />
