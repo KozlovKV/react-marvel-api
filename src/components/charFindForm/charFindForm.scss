@@ -7,6 +7,15 @@
 	column-gap: 25px;
 }
 
+.error {
+	color: $main-color;
+}
+
+.success {
+	color: #009f03;
+	;
+}
+
 .char__find {
 	padding: 25px;
 	margin-bottom: 30px;
@@ -26,14 +35,10 @@
 			cursor: pointer;
 		}
 
-		.error {
-			color: $main-color;
-		}
+
 	}
 
-	.success {
-		color: #009f03;;
-	}
+
 
 	&__results {
 		font-weight: bold;
