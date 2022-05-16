@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 
-import withFiniteState from './../../hocs/withFiniteState';
-import Spinner from "../spinner/Spinner";
 import useMarvelService from './../../services/MarvelService';
+
+import withFiniteState from './../../hocs/withFiniteState';
 
 import './randomChar.scss';
 
 import mjolnirImg from '../../resources/img/mjolnir.png';
 
-const RandomCharBlockWithFiniteStateMachine = withFiniteState({
-	loading: () => <Spinner width="250px" />,
-});
+const RandomCharBlockWithFiniteStateMachine = withFiniteState();
 
 export default function RandomChar() {
 

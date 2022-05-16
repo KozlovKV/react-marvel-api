@@ -3,20 +3,26 @@ import { Link } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-import Spinner from '../spinner/Spinner';
-import AnimatedAppearance from './../animatedAppearance/AnimatedAppearance';
 
 import useMarvelService from '../../services/MarvelService';
 
+import withFiniteState from '../../hocs/withFiniteState';
+
 import './charFindForm.scss';
 
+const FormResultsWithFiniteStateMachine = withFiniteState();
+
 export default function CharFindForm(props) {
-	const { loading, getCharactersByNamePart } = useMarvelService();
-	const [chars, setChars] = useState([]);
+	const { processState, setProcessState, getCharactersByNamePart } = useMarvelService();
+	const [chars, setChars] = useState(null);
 
 	function getCharsResultList() {
-		if (loading) return <Spinner width="150px" />;
-		if (!chars.length) return null;
+		if (!chars) return null;
+		if (!chars.length) {
+			return <h3 className="error">
+				Characters not found
+			</h3>;
+		}
 		return <>
 			<h3 className="success">
 				Founded {chars.length} char{chars.length > 1 ? 's' : ''}
@@ -43,7 +49,8 @@ export default function CharFindForm(props) {
 			})}
 			onSubmit={({ name }) => {
 				getCharactersByNamePart(name)
-					.then(setChars);
+					.then(setChars)
+					.then(() => setProcessState('success'));
 			}}
 		>
 			<Form className="char__find__form row">
@@ -54,8 +61,8 @@ export default function CharFindForm(props) {
 				<ErrorMessage name="name" className="error" component="h3" />
 			</Form>
 		</Formik>
-		<AnimatedAppearance in={!loading}>
+		<FormResultsWithFiniteStateMachine state={processState}>
 			{getCharsResultList()}
-		</AnimatedAppearance>
+		</FormResultsWithFiniteStateMachine>
 	</div>
 }

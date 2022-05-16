@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
 import Skeleton from "../skeleton/Skeleton";
-import AnimatedAppearance from "../animatedAppearance/AnimatedAppearance";
 
 import useMarvelService from "../../services/MarvelService";
 
+import withFiniteState from './../../hocs/withFiniteState';
+
 import './charInfo.scss';
 
+const CharInfoContentWithFiniteStateMachine = withFiniteState({
+	waiting: () => <Skeleton />
+});
 
 export default function CharInfo(props) {
 
 	const [char, setChar] = useState(null),
-		{ loading, error, getCharacter } = useMarvelService();
+		{ processState, setProcessState, getCharacter } = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
@@ -23,28 +25,19 @@ export default function CharInfo(props) {
 		const { selectedCharId } = props;
 		if (selectedCharId) {
 			getCharacter(selectedCharId)
-				.then(onCharLoaded);
+				.then(onCharLoaded)
+				.then(() => setProcessState('success'));
 		}
 	}
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(updateCharInfo, [props.selectedCharId]);
 
-	const skeleton = char || loading || error ? null : <Skeleton />,
-		spinner = loading ? <Spinner /> : null,
-		errorMessage = error ? <ErrorMessage /> : null,
-		charInfoBlock = !(loading || error || !char) ? <CharInfoBlock char={char} /> : null;
-
 	return (
 		<div className="char__info">
-			{skeleton}
-			<AnimatedAppearance in={loading}>
-				{spinner}
-			</AnimatedAppearance>
-			<AnimatedAppearance in={!loading}>
-				{errorMessage}
-				{charInfoBlock}
-			</AnimatedAppearance>
+			<CharInfoContentWithFiniteStateMachine state={processState}>
+				<CharInfoBlock char={char} />
+			</CharInfoContentWithFiniteStateMachine>
 		</div>
 	);
 }

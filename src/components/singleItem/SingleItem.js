@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Helmet from 'react-helmet';
 
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
-import AnimatedAppearance from '../animatedAppearance/AnimatedAppearance';
-
 import useMarvelService from '../../services/MarvelService';
+
+import withFiniteState from '../../hocs/withFiniteState';
 
 import './singleItem.scss';
 
+const SingleItemWithFiniteState = withFiniteState();
+
 export default function SingleComic(props) {
 	const { itemId, dataType } = props;
-	const { loading, error, getComic, getCharacter } = useMarvelService();
+	const { processState, setProcessState, getComic, getCharacter } = useMarvelService();
 	const typeParams = {
 		char: {
 			getData: getCharacter,
@@ -26,21 +26,19 @@ export default function SingleComic(props) {
 	const [data, setData] = useState(null);
 
 	useEffect(() => {
-		typeParams[dataType].getData(itemId).then(setData);
+		typeParams[dataType]
+			.getData(itemId)
+			.then(setData)
+			.then(() => setProcessState('success'));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [itemId]);
 
-	const spinner = loading ? <Spinner /> : null;
-	const errorMessage = error ? <ErrorMessage /> : null;
 	const BlockComponent = typeParams[dataType].DataBlock;
-	const dataBlock = !(loading || error) && data ? <BlockComponent {...data} /> : null;
 	return (
 		<>
-			{spinner}
-			<AnimatedAppearance in={!loading}>
-				{errorMessage}
-				{dataBlock}
-			</AnimatedAppearance>
+			<SingleItemWithFiniteState state={processState}>
+				<BlockComponent {...data} />
+			</SingleItemWithFiniteState>
 		</>
 	);
 }
@@ -72,7 +70,9 @@ function ComicBlock({ pageCount, language, price, ...props }) {
 		</Helmet>
 		<p className="single-item__descr">{pageCount} pages</p>
 		<p className="single-item__descr">Language: {language}</p>
-		<div className="single-item__price">{price}$</div>
+		<div className="single-item__price">
+			{price ? `${price}$` : 'Not available'}
+		</div>
 	</BaseSingleItemBlock>;
 }
 

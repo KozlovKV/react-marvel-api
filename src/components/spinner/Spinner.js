@@ -1,6 +1,6 @@
 export default function Spinner(props) {
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" {...props} style={{margin: 'auto', background: 'rgb(255, 255, 255)', display: 'block', shapeRendering: 'auto'}} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+		<svg xmlns="http://www.w3.org/2000/svg" width="250px" {...props} style={{margin: 'auto', background: 'rgb(255, 255, 255)', display: 'block', shapeRendering: 'auto'}} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
 			<g transform="rotate(0 50 50)">
 				<rect x="25" y="49.5" rx="0" ry="0" width="50" height="1" fill="#9f0013">
 					<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.9846153846153847s" repeatCount="indefinite"></animate>

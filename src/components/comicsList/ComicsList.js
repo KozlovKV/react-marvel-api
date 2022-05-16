@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import AnimatedAppearance from "../animatedAppearance/AnimatedAppearance";
-
 import useMarvelService, { _getComicsMaxOffset, _getComicsBaseOffset } from "../../services/MarvelService";
 
+import withFiniteState from "../../hocs/withFiniteState";
+
 import './comicsList.scss';
+
+const ComicsItemsWithFiniteState = withFiniteState();
 
 export default function ComicsList(props) {
 	const _loadMoreDelta = 8;
 
 	const [comics, setComics] = useState([]),
-		{ loading, error, getComics } = useMarvelService();
+		{ processState, setProcessState, getComics } = useMarvelService();
 
 	const onComicsLoaded = (newComics) => {
 		setComics(comics => [...comics, ...newComics]);
@@ -22,7 +22,8 @@ export default function ComicsList(props) {
 	const loadComics = () => {
 		const offset = comics.length;
 		getComics(offset, _loadMoreDelta)
-			.then(onComicsLoaded);
+			.then(onComicsLoaded)
+			.then(() => setProcessState('success'));
 	}
 
 	const getComicsItems = () => {
@@ -61,21 +62,14 @@ export default function ComicsList(props) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(loadComics, []);
 
-	const spinner = loading ? <Spinner width="250px" /> : null;
-	const errorMessage = error ? <ErrorMessage /> : null;
-	const button = !loading ? getLoadMoreButton() : null;
 	return (
 		<div className="comics__list">
-			<AnimatedAppearance in={!loading} unmountOnExit>
+			<ComicsItemsWithFiniteState state={processState}>
 				<ul className="comics__grid">
 					{getComicsItems()}
 				</ul>
-				{errorMessage}
-				{button}
-			</AnimatedAppearance>
-			<AnimatedAppearance in={loading} mountOnEnter>
-				{spinner}
-			</AnimatedAppearance>
+			</ComicsItemsWithFiniteState>
+			{getLoadMoreButton()}
 		</div>
 	);
 }
