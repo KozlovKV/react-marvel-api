@@ -10,7 +10,7 @@ import withFiniteState from '../../hocs/withFiniteState';
 
 import './charFindForm.scss';
 
-const FormResultsWithFiniteStateMachine = withFiniteState();
+const FormResultsWithFiniteState = withFiniteState();
 
 export default function CharFindForm(props) {
 	const { processState, setProcessState, getCharactersByNamePart } = useMarvelService();
@@ -61,8 +61,8 @@ export default function CharFindForm(props) {
 				<ErrorMessage name="name" className="error" component="h3" />
 			</Form>
 		</Formik>
-		<FormResultsWithFiniteStateMachine state={processState}>
+		<FormResultsWithFiniteState state={processState}>
 			{getCharsResultList()}
-		</FormResultsWithFiniteStateMachine>
+		</FormResultsWithFiniteState>
 	</div>
 }

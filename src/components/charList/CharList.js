@@ -6,7 +6,7 @@ import withFiniteState from './../../hocs/withFiniteState';
 
 import './charList.scss';
 
-const CharItemsWithFiniteStateMachine = withFiniteState();
+const CharItemsWithFiniteState = withFiniteState();
 
 export default function CharList(props) {
 	const _loadMoreDelta = 9;
@@ -62,12 +62,12 @@ export default function CharList(props) {
 
 	return (
 		<div className="char__list">
-			<CharItemsWithFiniteStateMachine state={processState}>
+			<CharItemsWithFiniteState state={processState}>
 				<ul className="char__grid">
 					{getCharItems()}
 				</ul>
 				{getLoadMoreButton()}
-			</CharItemsWithFiniteStateMachine>
+			</CharItemsWithFiniteState>
 		</div>
 	);
 }
