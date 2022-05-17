@@ -6,7 +6,6 @@ import { BaseFiniteStateWrapper } from './../../hocs/withFiniteState';
 
 import './charList.scss';
 
-
 export default function CharList(props) {
 	const _loadMoreDelta = 9;
 

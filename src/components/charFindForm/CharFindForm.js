@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-
 import useMarvelService from '../../services/MarvelService';
 
 import { BaseFiniteStateWrapper } from '../../hocs/withFiniteState';
 
 import './charFindForm.scss';
-
 
 export default function CharFindForm(props) {
 	const { processState, setProcessState, getCharactersByNamePart } = useMarvelService();
