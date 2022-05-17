@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 
 import useMarvelService, { _getCharactersMaxOffset, _getCharactersBaseOffset } from "../../services/MarvelService";
 
-import withFiniteState from './../../hocs/withFiniteState';
+import { BaseFiniteStateWrapper } from './../../hocs/withFiniteState';
 
 import './charList.scss';
 
-const CharItemsWithFiniteState = withFiniteState();
 
 export default function CharList(props) {
 	const _loadMoreDelta = 9;
@@ -62,12 +61,12 @@ export default function CharList(props) {
 
 	return (
 		<div className="char__list">
-			<CharItemsWithFiniteState state={processState}>
+			<BaseFiniteStateWrapper state={processState}>
 				<ul className="char__grid">
 					{getCharItems()}
 				</ul>
 				{getLoadMoreButton()}
-			</CharItemsWithFiniteState>
+			</BaseFiniteStateWrapper>
 		</div>
 	);
 }

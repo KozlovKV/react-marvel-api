@@ -3,11 +3,9 @@ import { Link } from "react-router-dom";
 
 import useMarvelService, { _getComicsMaxOffset, _getComicsBaseOffset } from "../../services/MarvelService";
 
-import withFiniteState from "../../hocs/withFiniteState";
+import { BaseFiniteStateWrapper } from "../../hocs/withFiniteState";
 
 import './comicsList.scss';
-
-const ComicsItemsWithFiniteState = withFiniteState();
 
 export default function ComicsList(props) {
 	const _loadMoreDelta = 8;
@@ -64,11 +62,11 @@ export default function ComicsList(props) {
 
 	return (
 		<div className="comics__list">
-			<ComicsItemsWithFiniteState state={processState}>
+			<BaseFiniteStateWrapper state={processState}>
 				<ul className="comics__grid">
 					{getComicsItems()}
 				</ul>
-			</ComicsItemsWithFiniteState>
+			</BaseFiniteStateWrapper>
 			{getLoadMoreButton()}
 		</div>
 	);

@@ -6,11 +6,10 @@ import * as Yup from 'yup';
 
 import useMarvelService from '../../services/MarvelService';
 
-import withFiniteState from '../../hocs/withFiniteState';
+import { BaseFiniteStateWrapper } from '../../hocs/withFiniteState';
 
 import './charFindForm.scss';
 
-const FormResultsWithFiniteState = withFiniteState();
 
 export default function CharFindForm(props) {
 	const { processState, setProcessState, getCharactersByNamePart } = useMarvelService();
@@ -61,8 +60,8 @@ export default function CharFindForm(props) {
 				<ErrorMessage name="name" className="error" component="h3" />
 			</Form>
 		</Formik>
-		<FormResultsWithFiniteState state={processState}>
+		<BaseFiniteStateWrapper state={processState}>
 			{getCharsResultList()}
-		</FormResultsWithFiniteState>
+		</BaseFiniteStateWrapper>
 	</div>
 }

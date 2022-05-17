@@ -70,9 +70,7 @@ function ComicBlock({ pageCount, language, price, ...props }) {
 		</Helmet>
 		<p className="single-item__descr">{pageCount} pages</p>
 		<p className="single-item__descr">Language: {language}</p>
-		<div className="single-item__price">
-			{price ? `${price}$` : 'Not available'}
-		</div>
+		<div className="single-item__price">{price}</div>
 	</BaseSingleItemBlock>;
 }
 

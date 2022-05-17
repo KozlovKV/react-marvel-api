@@ -2,13 +2,11 @@ import { useState, useEffect } from "react";
 
 import useMarvelService from './../../services/MarvelService';
 
-import withFiniteState from './../../hocs/withFiniteState';
+import { BaseFiniteStateWrapper } from './../../hocs/withFiniteState';
 
 import './randomChar.scss';
 
 import mjolnirImg from '../../resources/img/mjolnir.png';
-
-const RandomCharBlockWithFiniteState = withFiniteState();
 
 export default function RandomChar() {
 
@@ -31,9 +29,9 @@ export default function RandomChar() {
 
 	return (
 		<div className="randomchar">
-			<RandomCharBlockWithFiniteState state={processState}>
+			<BaseFiniteStateWrapper state={processState}>
 				<RandomCharBlock char={char} />
-			</RandomCharBlockWithFiniteState>
+			</BaseFiniteStateWrapper>
 			<div className="randomchar__static">
 				<p className="randomchar__title">
 					Random character for today!<br />

@@ -8,7 +8,7 @@ import withFiniteState from './../../hocs/withFiniteState';
 
 import './charInfo.scss';
 
-const CharInfoContentWithFiniteStateMachine = withFiniteState({
+const CharInfoFiniteStateWrapper = withFiniteState({
 	waiting: () => <Skeleton />
 });
 
@@ -35,9 +35,9 @@ export default function CharInfo(props) {
 
 	return (
 		<div className="char__info">
-			<CharInfoContentWithFiniteStateMachine state={processState}>
+			<CharInfoFiniteStateWrapper state={processState}>
 				<CharInfoBlock char={char} />
-			</CharInfoContentWithFiniteStateMachine>
+			</CharInfoFiniteStateWrapper>
 		</div>
 	);
 }

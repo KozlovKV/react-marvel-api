@@ -14,3 +14,5 @@ export default function withFiniteState(modifiedActions) {
 		return stateActions[state](props);
 	}
 }
+
+export const BaseFiniteStateWrapper = withFiniteState();

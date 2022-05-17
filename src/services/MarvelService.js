@@ -60,7 +60,9 @@ export default function useMarvelService() {
 	function _getProcessedComic(comicObj) {
 		const { id, title, pageCount } = comicObj;
 		let thumbnail = _getThumbnailObj(comicObj.thumbnail),
-			price = comicObj.prices[0].price,
+			price = comicObj.prices[0].price ? 
+				comicObj.prices[0].price + '$' : 
+				'Not available',
 			description = !comicObj.description ? 'Description not found' : comicObj.description,
 			shortedDescription = _getShortedDescription(description),
 			language= comicObj.textObjects.language || 'en-us';
